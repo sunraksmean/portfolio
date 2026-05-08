@@ -149,7 +149,7 @@ export default function Hero() {
                 color: 'var(--accent-blue)',
                 letterSpacing: '-0.04em'
               }}>
-                <img src="./public/photo.png" alt="Photo" style={{ width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'red' }} />
+                <img src={`${import.meta.env.BASE_URL}/photo.png`} alt="Photo" style={{ width: '100%', height: '100%', objectFit: 'cover', backgroundColor: 'red' }} />
               </div>
             </div>
 
