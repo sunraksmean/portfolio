@@ -64,7 +64,7 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
                 </button>
               </div>
             ) : (
-              <a href="https://sunraksmean.github.io/portfolio/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem',textDecoration: 'none' }}>
+              <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem',textDecoration: 'none' }}>
                 <img src={`${import.meta.env.BASE_URL}/logo.png`} alt="SRS" style={{ width: 70, height: 70, borderRadius: 20 }} />
                 <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{""}</span>
                 {editMode && <Edit3 size={12} color="var(--accent-cyan)" style={{ marginLeft: 2 }} />}
