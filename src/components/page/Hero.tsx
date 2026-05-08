@@ -117,7 +117,7 @@ export default function Hero() {
               <a href="#projects" className="btn btn-outline">
                 View Projects
               </a>
-              <a href="./SunRaksmean_Resume.pdf" className="btn btn-ghost" style={{ fontSize: '0.85rem', padding: '0.7rem 1rem', border: '1px solid var(--border)' }}>
+              <a href={`${import.meta.env.BASE_URL}/SunRaksmean_Resume.pdf`} className="btn btn-ghost" style={{ fontSize: '0.85rem', padding: '0.7rem 1rem', border: '1px solid var(--border)' }}>
                 <Download size={15} />
                 Download Resume
               </a>
@@ -199,7 +199,7 @@ export default function Hero() {
         .hero-grid { grid-template-columns: 1fr auto; }
         @media(max-width:768px) {
           .hero-grid { grid-template-columns: 1fr; }
-          .hero-avatar { display: none; }
+          .hero-avatar { display: block; margin-top: 2rem; }
         }
       `}</style>
     </section>

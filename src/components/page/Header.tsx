@@ -46,7 +46,7 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
         borderBottom: scrolled ? '1px solid var(--border-subtle)' : 'none',
         transition: 'all 0.3s ease',
       }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem' }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem'}}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {editingLogo ? (
@@ -64,9 +64,9 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
                 </button>
               </div>
             ) : (
-              <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem',textDecoration: 'none' }}>
-                <img src="./public/favicon.svg" alt="SRS" style={{ width: 34, height: 34 }} />
-                <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{logo}</span>
+              <a href="https://sunraksmean.github.io/portfolio/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem',textDecoration: 'none' }}>
+                <img src={`${import.meta.env.BASE_URL}/logo.png`} alt="SRS" style={{ width: 70, height: 70, borderRadius: 20 }} />
+                <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{""}</span>
                 {editMode && <Edit3 size={12} color="var(--accent-cyan)" style={{ marginLeft: 2 }} />}
               </a>
             )}
@@ -121,30 +121,46 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile dropdown menu */}
         {menuOpen && (
-          <div style={{
-            background: 'var(--nav-bg)',
-            backdropFilter: 'blur(16px)',
-            borderTop: '1px solid var(--border-subtle)',
-            padding: '1rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.25rem',
-          }}>
+          <nav className="mobile-menu" aria-label="Mobile navigation">
             {NAV_LINKS.map(l => (
               <a key={l.href} href={l.href}
                 onClick={() => setMenuOpen(false)}
-                style={{ padding: '0.6rem 1rem', color: 'var(--text-secondary)', textDecoration: 'none', borderRadius: '0.4rem', fontFamily: "'Kantumruy Pro', sans-serif", fontSize: '0.9rem' }}>
+                style={{
+                  display: 'block',
+                  padding: '0.8rem 1.5rem',
+                  color: 'var(--text-secondary)',
+                  textDecoration: 'none',
+                  borderRadius: '0.5rem',
+                  fontFamily: "'Kantumruy Pro', sans-serif",
+                  fontSize: '0.95rem',
+                }}>
                 {l.label}
               </a>
             ))}
-          </div>
+          </nav>
         )}
       </header>
 
       <style>{`
         .hamburger { display: none; }
+        .mobile-menu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background: var(--nav-bg);
+          backdrop-filter: blur(16px);
+          border-top: 1px solid var(--border-subtle);
+          padding: 1rem 0;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          animation: slideDown 0.3s ease-out forwards;
+        }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         @media (max-width: 768px) {
           .nav-desktop { display: none; }
           .hamburger { display: flex; }
