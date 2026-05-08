@@ -1,7 +1,7 @@
 // src/components/Skills.tsx
 import { useState } from 'react';
 import { Plus, Trash2, Edit3, Check, X } from 'lucide-react';
-import type { Skill } from '../types';
+import type { Skill } from '../../types';
 
 interface SkillsProps {
   skills: Skill[];
@@ -15,7 +15,7 @@ const CATEGORIES = ['Systems & Support', 'Networking', 'Database & Reporting', '
 
 function SkillBar({ skill, editMode, onEdit, onDelete }: { skill: Skill; editMode: boolean; onEdit: (s: Skill) => void; onDelete: (id: string) => void }) {
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState(skill);
+  const [form, setForm] = useState<Skill>(skill);
 
   const save = () => { onEdit(form); setEditing(false); };
 
