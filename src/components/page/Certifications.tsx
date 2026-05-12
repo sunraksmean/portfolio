@@ -68,11 +68,11 @@ export default function Certifications({ certs, onAdd, onEdit, onDelete, editMod
   return (
     <section id="certifications" className="section">
       <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-          <div>
+        <div className="certs-header">
+          <div className="certs-heading">
             <div className="divider" />
             <h2 className="section-title">Certifications</h2>
-            <p className="section-subtitle" style={{ marginBottom: 0 }}>Education & professional credentials</p>
+            <p className="section-subtitle" style={{ marginBottom: 0 }}>Education &amp; professional credentials</p>
           </div>
           {editMode && !showForm && (
             <button className="btn btn-primary" onClick={() => setShowForm(true)}>
@@ -101,6 +101,37 @@ export default function Certifications({ certs, onAdd, onEdit, onDelete, editMod
           </div>
         )}
       </div>
+
+      <style>{`
+        .certs-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+        @media (max-width: 768px) {
+          .certs-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+          .certs-heading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+          .certs-heading .divider {
+            margin-left: auto;
+            margin-right: auto;
+          }
+          .certs-heading .section-subtitle {
+            text-align: center;
+          }
+        }
+      `}</style>
     </section>
   );
 }

@@ -133,6 +133,7 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
                 {isAdmin && <Edit3 size={12} color="var(--accent-cyan)" style={{ marginLeft: 2 }} />}
               </a>
             )}
+
           </div>
 
           {/* Desktop nav */}
@@ -238,6 +239,15 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
           display: flex;
           flex-direction: column;
           padding: 0.75rem 0 1rem;
+          .site-name {
+            font-family: "Outfit", sans-serif;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-left: 0.75rem;
+          }
         }
         .mobile-nav-link {
           display: block;

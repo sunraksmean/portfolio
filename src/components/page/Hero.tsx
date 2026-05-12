@@ -239,7 +239,7 @@ export default function Hero({ editMode }: HeroProps) {
         </div>
 
         {/* Scroll hint */}
-        <div style={{ marginTop: '4rem', display: 'flex', justifyContent: 'center' }}>
+        <div className="hero-scroll-hint">
           <a href="#about" style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem',
             color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.75rem',
@@ -390,7 +390,7 @@ export default function Hero({ editMode }: HeroProps) {
 
           /* Text on top, avatar below */
           .hero-text        { order: 1; width: 100%; }
-          .hero-avatar-wrap { order: 2; width: 100%; margin-top: 2.5rem; margin-bottom: 1.5rem; }
+          .hero-avatar-wrap { order: 2; width: 100%; margin-top: 2rem; margin-bottom: -3.5rem; }
 
           /* Center inline elements */
           .hero-pills { justify-content: center; }
@@ -403,13 +403,20 @@ export default function Hero({ editMode }: HeroProps) {
           /* Disable hover tilt on touch — feels glitchy */
           .hero-avatar:hover .avatar-frame { transform: none; }
           .hero-avatar:hover .avatar-photo { transform: none; }
+
+          /* Scroll hint — pull up closer to avatar */
+          .hero-scroll-hint { margin-top: 1rem; display: flex; justify-content: center; }
         }
 
         /* On very small phones, hide the decorative rings to avoid overflow */
         @media (max-width: 480px) {
           .avatar-ring { display: none; }
-          .hero-avatar-wrap { transform: scale(0.66); }
+          .hero-avatar-wrap { transform: scale(0.66); margin-bottom: -4.5rem; }
+          .hero-scroll-hint { margin-top: 0.5rem; }
         }
+
+        /* Desktop scroll hint */
+        .hero-scroll-hint { margin-top: 4rem; display: flex; justify-content: center; }
       `}</style>
     </section>
   );
