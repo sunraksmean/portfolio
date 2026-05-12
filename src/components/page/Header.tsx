@@ -128,7 +128,7 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
                 <img
                   src={`${import.meta.env.BASE_URL}/logo.png`}
                   alt="SRS"
-                  style={{ width: 50, height: 50, borderRadius: 14 }}
+                  style={{ width: 78, height: 78, borderRadius: 14 }}
                 />
                 {isAdmin && <Edit3 size={12} color="var(--accent-cyan)" style={{ marginLeft: 2 }} />}
               </a>
@@ -140,7 +140,7 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
             {NAV_LINKS.map(l => (
               <a key={l.href} href={l.href} style={{
                 padding: '0.4rem 0.75rem',
-                fontSize: '0.85rem',
+                fontSize: '1rem',
                 fontWeight: 500,
                 color: 'var(--text-secondary)',
                 textDecoration: 'none',
