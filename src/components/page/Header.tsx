@@ -1,6 +1,6 @@
 // src/components/Header.tsx
-import { useState, useEffect } from 'react';
-import { Sun, Moon, Edit3, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Edit3, X, Menu } from 'lucide-react';
 
 interface HeaderProps {
   dark: boolean;
@@ -25,28 +25,85 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
   const [menuOpen, setMenuOpen] = useState(false);
   const [editingLogo, setEditingLogo] = useState(false);
   const [logoInput, setLogoInput] = useState(logo);
+  const headerRef = useRef<HTMLElement>(null);
 
+  // ── Password modal state ──
+  const [showPwModal, setShowPwModal] = useState(false);
+  const [pwInput, setPwInput]         = useState('');
+  const [pwError, setPwError]         = useState(false);
+  const [pwShake, setPwShake]         = useState(false);
+
+  // Default password stored in localStorage so owner can change it
+  const getPassword = () => localStorage.getItem('portfolio-owner-pw') || '1234';
+
+  const handleEditClick = () => {
+    if (editMode) {
+      // Already owner — just exit edit mode
+      toggleEdit();
+    } else {
+      // Require password to enter edit mode
+      setPwInput('');
+      setPwError(false);
+      setShowPwModal(true);
+    }
+  };
+
+  const handlePwSubmit = () => {
+    if (pwInput === getPassword()) {
+      setShowPwModal(false);
+      setPwInput('');
+      setPwError(false);
+      toggleEdit();
+    } else {
+      setPwError(true);
+      setPwShake(true);
+      setTimeout(() => setPwShake(false), 500);
+    }
+  };
+
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Close menu on outside click
+  useEffect(() => {
+    const handleOutside = (e: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [menuOpen]);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const handleLogoSave = () => {
     onLogoChange(logoInput);
     setEditingLogo(false);
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <>
-      <header style={{
+      <header ref={headerRef} style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 800,
-        background: scrolled ? 'var(--nav-bg)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px)' : 'none',
-        borderBottom: scrolled ? '1px solid var(--border-subtle)' : 'none',
+        background: scrolled || menuOpen ? 'var(--nav-bg)' : 'transparent',
+        backdropFilter: scrolled || menuOpen ? 'blur(16px)' : 'none',
+        borderBottom: scrolled || menuOpen ? '1px solid var(--border-subtle)' : 'none',
         transition: 'all 0.3s ease',
       }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem'}}>
+        {/* ── Top bar ── */}
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem' }}>
+
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {editingLogo ? (
@@ -55,25 +112,24 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
                   className="form-input"
                   value={logoInput}
                   onChange={e => setLogoInput(e.target.value)}
-                  style={{ width: 160, padding: '0.3rem 0.6rem', fontSize: '0.85rem' }}
+                  style={{ width: 140, padding: '0.3rem 0.6rem', fontSize: '0.85rem' }}
                   autoFocus
                 />
                 <button className="btn btn-primary" style={{ padding: '0.3rem 0.7rem', fontSize: '0.8rem' }} onClick={handleLogoSave}>Save</button>
-                <button className="btn-ghost btn" onClick={() => setEditingLogo(false)}>
+                <button className="btn btn-ghost" onClick={() => setEditingLogo(false)}>
                   <X size={14} />
                 </button>
               </div>
             ) : (
-              <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem',textDecoration: 'none' }}>
-                <img src={`${import.meta.env.BASE_URL}/logo.png`} alt="SRS" style={{ width: 70, height: 70, borderRadius: 20 }} />
-                <span style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>{""}</span>
+              <a href="#about" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
+                <img src={`${import.meta.env.BASE_URL}/logo.png`} alt="SRS" style={{ width: 50, height: 50, borderRadius: 14 }} />
                 {editMode && <Edit3 size={12} color="var(--accent-cyan)" style={{ marginLeft: 2 }} />}
               </a>
             )}
           </div>
 
-          {/* Nav desktop */}
-          <nav style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }} className="nav-desktop">
+          {/* Desktop nav */}
+          <nav className="nav-desktop" style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
             {NAV_LINKS.map(l => (
               <a key={l.href} href={l.href} style={{
                 padding: '0.4rem 0.75rem',
@@ -91,13 +147,11 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
             ))}
           </nav>
 
-          {/* Actions */}
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <button className="btn btn-ghost" onClick={toggleDark} title="Toggle dark mode">
-              {dark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+          {/* Right: Edit mode (desktop) + Hamburger (mobile) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {/* Edit mode button — desktop only */}
             <button
-              className="btn"
+              className="btn nav-edit-btn"
               onClick={toggleEdit}
               style={{
                 padding: '0.4rem 1rem',
@@ -110,60 +164,97 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
               <Edit3 size={14} />
               {editMode ? 'Exit Edit' : 'Edit Mode'}
             </button>
-            {/* Hamburger */}
-            <button className="btn btn-ghost hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 18 }}>
-                <span style={{ height: 2, background: 'var(--text-primary)', borderRadius: 1, display: 'block', transition: 'all 0.2s', transform: menuOpen ? 'rotate(45deg) translateY(6px)' : 'none' }} />
-                <span style={{ height: 2, background: 'var(--text-primary)', borderRadius: 1, display: 'block', opacity: menuOpen ? 0 : 1 }} />
-                <span style={{ height: 2, background: 'var(--text-primary)', borderRadius: 1, display: 'block', transition: 'all 0.2s', transform: menuOpen ? 'rotate(-45deg) translateY(-6px)' : 'none' }} />
-              </div>
+
+            {/* Hamburger button — mobile only */}
+            <button
+              className="btn btn-ghost hamburger-btn"
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              style={{ padding: '0.5rem' }}
+            >
+              {menuOpen
+                ? <X size={22} style={{ transition: 'all 0.2s' }} />
+                : <Menu size={22} style={{ transition: 'all 0.2s' }} />
+              }
             </button>
           </div>
         </div>
 
-        {/* Mobile dropdown menu */}
-        {menuOpen && (
-          <nav className="mobile-menu" aria-label="Mobile navigation">
-            {NAV_LINKS.map(l => (
-              <a key={l.href} href={l.href}
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  display: 'block',
-                  padding: '0.8rem 1.5rem',
-                  color: 'var(--text-secondary)',
-                  textDecoration: 'none',
-                  borderRadius: '0.5rem',
-                  fontFamily: "'Kantumruy Pro', sans-serif",
-                  fontSize: '0.95rem',
-                }}>
+        {/* ── Mobile dropdown menu ── */}
+        <nav
+          className={`mobile-nav${menuOpen ? ' mobile-nav--open' : ''}`}
+          aria-label="Mobile navigation"
+        >
+          <div className="mobile-nav-inner">
+            {NAV_LINKS.map((l, i) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={closeMenu}
+                className="mobile-nav-link"
+                style={{ animationDelay: `${i * 40}ms` }}
+              >
                 {l.label}
               </a>
             ))}
-          </nav>
-        )}
+          </div>
+        </nav>
       </header>
 
       <style>{`
-        .hamburger { display: none; }
-        .mobile-menu {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          width: 100%;
+        /* ── Desktop: hide hamburger ── */
+        .hamburger-btn { display: none !important; }
+
+        /* ── Mobile nav: hidden by default ── */
+        .mobile-nav {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
           background: var(--nav-bg);
           backdrop-filter: blur(16px);
-          border-top: 1px solid var(--border-subtle);
-          padding: 1rem 0;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          animation: slideDown 0.3s ease-out forwards;
+          border-top: 1px solid transparent;
         }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
+        .mobile-nav--open {
+          max-height: 400px;
+          border-top-color: var(--border-subtle);
         }
+        .mobile-nav-inner {
+          display: flex;
+          flex-direction: column;
+          padding: 0.75rem 0 1rem;
+        }
+        .mobile-nav-link {
+          display: block;
+          padding: 0.75rem 1.5rem;
+          color: var(--text-secondary);
+          text-decoration: none;
+          font-family: 'Kantumruy Pro', sans-serif;
+          font-size: 1rem;
+          font-weight: 500;
+          border-radius: 0.4rem;
+          margin: 0 0.75rem;
+          transition: background 0.15s, color 0.15s;
+          opacity: 0;
+          animation: none;
+        }
+        .mobile-nav--open .mobile-nav-link {
+          animation: fadeSlideIn 0.25s ease forwards;
+        }
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateX(-8px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        .mobile-nav-link:hover {
+          background: var(--bg-card);
+          color: var(--text-primary);
+        }
+
+        /* ── Responsive breakpoint ── */
         @media (max-width: 768px) {
-          .nav-desktop { display: none; }
-          .hamburger { display: flex; }
+          .nav-desktop    { display: none !important; }
+          .nav-edit-btn   { display: none !important; }
+          .hamburger-btn  { display: flex !important; }
         }
       `}</style>
     </>

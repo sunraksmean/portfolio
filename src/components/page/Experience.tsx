@@ -114,7 +114,7 @@ export default function ExperienceSection({ experiences, onAdd, onEdit, onDelete
         <h2 className="section-title">Work Experience</h2>
         <p className="section-subtitle">Building expertise across IT roles in Cambodia</p>
 
-        <div style={{ maxWidth: 800 }}>
+        <div className="exp-list">
           {experiences.map(e => (
             <ExpCard key={e.id} exp={e} editMode={editMode} onEdit={onEdit} onDelete={onDelete} />
           ))}
@@ -162,6 +162,18 @@ export default function ExperienceSection({ experiences, onAdd, onEdit, onDelete
           )}
         </div>
       </div>
+
+      <style>{`
+        .exp-list {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+          .exp-list .exp-form-row {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
     </section>
   );
 }

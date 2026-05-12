@@ -11,7 +11,7 @@ export default function Footer() {
       background: 'var(--bg-secondary)',
     }}>
       <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="footer-inner">
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
               <div style={{
@@ -44,6 +44,35 @@ export default function Footer() {
           </p>
         </div>
       </div>
+
+      <style>{`
+        .footer-inner {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+        @media (max-width: 768px) {
+          .footer-inner {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.5rem;
+          }
+          .footer-inner > div:first-child {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .footer-inner > div:nth-child(2) {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

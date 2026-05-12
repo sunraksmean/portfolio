@@ -30,12 +30,13 @@ export default function Contact() {
         <h2 className="section-title">Get In Touch</h2>
         <p className="section-subtitle">Let's discuss how I can contribute to your team</p>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '3rem', alignItems: 'start' }} className="contact-grid">
+        <div className="contact-grid">
 
-          {/* Info */}
-          <div>
+          {/* ── Info column ── */}
+          <div className="contact-info">
             <p style={{ color: 'var(--text-secondary)', lineHeight: 1.75, marginBottom: '2rem', fontWeight: 300 }}>
-              I'm open to new opportunities in IT management, system administration, or senior support roles. Whether you have a question or want to discuss a role, feel free to reach out.
+              I'm open to new opportunities in IT management, system administration, or senior support roles.
+              Whether you have a question or want to discuss a role, feel free to reach out.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -58,8 +59,8 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Form */}
-          <div className="card" style={{ padding: '2rem' }}>
+          {/* ── Message form card ── */}
+          <div className="card contact-form-card" style={{ padding: '2rem' }}>
             {sent ? (
               <div style={{ textAlign: 'center', padding: '2rem' }}>
                 <div style={{
@@ -78,7 +79,8 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                {/* Name + Email — two columns on desktop, one on mobile */}
+                <div className="form-row">
                   <div className="form-group">
                     <label className="form-label">Your Name *</label>
                     <input className="form-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="John Doe" required />
@@ -88,6 +90,7 @@ export default function Contact() {
                     <input className="form-input" type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="john@example.com" required />
                   </div>
                 </div>
+
                 <div className="form-group">
                   <label className="form-label">Subject</label>
                   <input className="form-input" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} placeholder="Job opportunity / Collaboration" />
@@ -114,8 +117,37 @@ export default function Contact() {
 
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
-        .contact-grid { grid-template-columns: 1fr 1.5fr; }
-        @media(max-width:768px) { .contact-grid { grid-template-columns: 1fr; } }
+
+        /* ── Desktop ── */
+        .contact-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.5fr;
+          gap: 3rem;
+          align-items: start;
+        }
+        /* Name + Email row: two columns */
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.75rem;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+          /* Stack info above form */
+          .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+          /* Info on top, form below */
+          .contact-info      { order: 1; }
+          .contact-form-card { order: 2; }
+
+          /* Name + Email: single column on mobile */
+          .form-row {
+            grid-template-columns: 1fr;
+          }
+        }
       `}</style>
     </section>
   );

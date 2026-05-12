@@ -60,7 +60,7 @@ export default function App() {
       />
 
       <main>
-        <Hero />
+        <Hero editMode={editMode} />
         <About />
         <Skills
           skills={skills}

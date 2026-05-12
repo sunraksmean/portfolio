@@ -175,7 +175,7 @@ export default function Projects({ projects, onAdd, onEdit, onDelete, editMode }
   return (
     <section id="projects" className="section" style={{ background: 'var(--bg-secondary)' }}>
       <div className="container">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="projects-header">
           <div>
             <div className="divider" />
             <h2 className="section-title">Featured Projects</h2>
@@ -210,6 +210,22 @@ export default function Projects({ projects, onAdd, onEdit, onDelete, editMode }
           />
         )}
       </div>
+
+      <style>{`
+        .projects-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+        @media (max-width: 480px) {
+          .projects-header { flex-direction: column; align-items: flex-start; }
+          .projects-header .section-title,
+          .projects-header .divider { text-align: left; margin-left: 0; }
+        }
+      `}</style>
     </section>
   );
 }

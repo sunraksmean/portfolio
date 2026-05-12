@@ -32,7 +32,7 @@ export default function About() {
 
   return (
     <section id="about" className="section">
-      <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div className="container">
         {/* Mobile toggle button */}
         {isMobile && (
           <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
@@ -144,13 +144,15 @@ export default function About() {
 
       <style>{`
         .about-grid {
+          display: grid;
           grid-template-columns: 1fr 1fr;
+          gap: 4rem;
+          align-items: start;
         }
-        
         @media (max-width: 768px) {
           .about-grid {
-            grid-template-columns: 1fr !important;
-            gap: 2rem !important;
+            grid-template-columns: 1fr;
+            gap: 2rem;
           }
         }
       `}</style>

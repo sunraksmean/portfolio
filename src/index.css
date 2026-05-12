@@ -71,7 +71,13 @@ body {
 ::selection { background: var(--accent-blue); color: #fff; }
 
 /* ─── UTILITY ────────────────────────────────────────────── */
-.container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 1.5rem;}
+.container {
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1.5rem;
+}
 .section { padding: 5rem 0; }
 .section-title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
@@ -252,7 +258,28 @@ body {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .container { max-width: 960px; }
+}
+@media (max-width: 992px) {
+  .container { max-width: 100%; padding: 0 2rem; }
+}
 @media (max-width: 768px) {
   .section { padding: 3.5rem 0; }
+  .container { padding: 0 1.25rem; }
+  /* Center section titles and subtitles on mobile */
+  .section-title,
+  .section-subtitle,
+  .divider {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .divider {
+    width: 3rem;   /* keep fixed width, auto margins center it */
+  }
+}
+@media (max-width: 480px) {
   .container { padding: 0 1rem; }
+  .section { padding: 2.5rem 0; }
 }
