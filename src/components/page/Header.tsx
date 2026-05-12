@@ -120,8 +120,11 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
               </div>
             ) : (
               <a
-                href="#about"
-                onClick={handleLogoClick}
+                href="#hero"
+                onClick={(e) => {
+                  handleLogoClick(e);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 title={isAdmin ? 'Click to edit logo' : undefined}
                 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', cursor: 'pointer' }}
               >

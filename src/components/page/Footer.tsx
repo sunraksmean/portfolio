@@ -13,15 +13,21 @@ export default function Footer() {
       <div className="container">
         <div className="footer-inner">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: '50%',
-                background: 'var(--accent-gradient)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontWeight: 700, fontSize: '0.72rem',
-              }}>SR</div>
+            <a 
+              href="#hero" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem', textDecoration: 'none' }}
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}/logo.png`}
+                alt="SRS"
+                style={{ width: 42, height: 42, borderRadius: 8 }}
+              />
               <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>Sun Raksmean</span>
-            </div>
+            </a>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>IT Support · System Administrator · Phnom Penh, Cambodia</p>
           </div>
 

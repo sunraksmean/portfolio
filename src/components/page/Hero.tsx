@@ -136,28 +136,12 @@ export default function Hero({ editMode }: HeroProps) {
             </div>
 
             {/* Name */}
-            <h1 style={{
-              fontSize: 'clamp(2.2rem, 7vw, 4.5rem)',
-              fontWeight: 800,
-              lineHeight: 1.05,
-              letterSpacing: '-0.03em',
-              marginBottom: '0.5rem',
-              color: 'var(--text-primary)',
-            }}>
-              Sun Raksmean
+            <h1 className="hero-name">
+              <span className="name-accent">Sun Raksmean</span>
             </h1>
 
-            {/* Title gradient */}
-            <h2 style={{
-              fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
-              fontWeight: 600,
-              background: 'var(--accent-gradient)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              marginBottom: '1.5rem',
-              letterSpacing: '0.01em',
-            }}>
+            {/* Title */}
+            <h2 className="hero-title">
               Acting Deputy IT Manager · IT Support Specialist
             </h2>
 
@@ -201,9 +185,9 @@ export default function Hero({ editMode }: HeroProps) {
               <a href="#projects" className="btn btn-outline">
                 View Projects
               </a>
-              <a href={`${import.meta.env.BASE_URL}/SunRaksmean_Resume.pdf`} className="btn btn-ghost" style={{ fontSize: '0.85rem', padding: '0.7rem 1rem', border: '1px solid var(--border)' }}>
-                <Download size={15} />
-                Download Resume
+              <a href={`${import.meta.env.BASE_URL}/SunRaksmean_Resume.pdf`} className="btn btn-resume">
+                <Download size={16} className="resume-icon" />
+                <span>Download Resume</span>
               </a>
             </div>
           </div>
@@ -258,6 +242,42 @@ export default function Hero({ editMode }: HeroProps) {
           50%      { transform: translateY(6px); }
         }
 
+        /* ── Hero Text Styling ── */
+        .hero-name {
+          font-size: clamp(2.4rem, 8vw, 4.8rem);
+          font-weight: 800;
+          line-height: 1.05;
+          letter-spacing: -0.04em;
+          margin-bottom: 0.5rem;
+          color: var(--text-primary);
+        }
+
+        .name-accent {
+          background: var(--accent-gradient);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          display: inline-block;
+          filter: drop-shadow(0 0 20px var(--accent-glow));
+          transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        .hero-name:hover .name-accent {
+          filter: drop-shadow(0 0 35px var(--accent-glow));
+          transform: translateY(-2px);
+        }
+
+        .hero-title {
+          font-size: clamp(1rem, 2.5vw, 1.5rem);
+          font-weight: 600;
+          background: var(--accent-gradient);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 1.5rem;
+          letter-spacing: 0.01em;
+        }
+
         /* ── Desktop layout ── */
         .hero-grid {
           display: grid;
@@ -267,7 +287,50 @@ export default function Hero({ editMode }: HeroProps) {
         }
         .hero-text  { min-width: 0; }
         .hero-pills { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
-        .hero-ctas  { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .hero-ctas  { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+
+        /* ── Premium Resume Button ── */
+        .btn-resume {
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          color: var(--text-primary) !important;
+          padding: 0.7rem 1.4rem;
+          font-size: 0.88rem;
+          position: relative;
+          overflow: hidden;
+          box-shadow: var(--shadow-card);
+          z-index: 1;
+        }
+
+        .btn-resume::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(120deg, transparent, rgba(255,255,255,0.05), transparent);
+          transform: translateX(-100%);
+          transition: transform 0.6s ease;
+          z-index: -1;
+        }
+
+        .btn-resume:hover::after {
+          transform: translateX(100%);
+        }
+
+        .btn-resume:hover {
+          border-color: var(--accent-blue);
+          box-shadow: 0 8px 25px var(--accent-glow);
+          transform: translateY(-3px);
+          background: var(--bg-card-hover);
+        }
+
+        .resume-icon {
+          color: var(--accent-cyan);
+          transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-resume:hover .resume-icon {
+          transform: translateY(2px) scale(1.1);
+        }
 
         /* Avatar wrapper — padding absorbs the -16px overflowing stat cards */
         .hero-avatar-wrap {
