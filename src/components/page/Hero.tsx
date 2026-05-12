@@ -66,7 +66,7 @@ export default function Hero({ editMode }: HeroProps) {
           {/* ── Text column ── */}
           <div className="hero-text">
             {/* Availability Badge — owner-only toggle */}
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div className="availability-badge" style={{ marginBottom: '1.25rem' }}>
               {editMode ? (
                 /* ── Owner: clickable toggle ── */
                 <button
@@ -398,6 +398,7 @@ export default function Hero({ editMode }: HeroProps) {
 
           /* Scale the whole avatar block so rings + stat badges stay on screen */
           .hero-avatar-wrap { transform: scale(0.72); transform-origin: top center; }
+          .availability-badge { display: none; }
 
           /* Disable hover tilt on touch — feels glitchy */
           .hero-avatar:hover .avatar-frame { transform: none; }
