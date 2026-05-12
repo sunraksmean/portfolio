@@ -216,50 +216,24 @@ export default function Hero({ editMode }: HeroProps) {
           */}
           <div className="hero-avatar-wrap">
             <div className="hero-avatar">
-              {/* Photo frame */}
-              <div style={{
-                width: 240, height: 240,
-                borderRadius: '2rem',
-                background: 'var(--accent-gradient)',
-                padding: 3,
-                overflow: 'hidden',
-                boxShadow: '0 20px 60px var(--accent-glow)',
-              }}>
-                <div style={{
-                  width: '100%', height: '100%',
-                  borderRadius: 'calc(2rem - 3px)',
-                  background: 'var(--bg-card)',
-                  overflow: 'hidden',
-                }}>
-                  <img
-                    src={`${import.meta.env.BASE_URL}/photo.png`}
-                    alt="Photo"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                </div>
+
+              {/* ── Decorative floating rings ── */}
+              <div className="avatar-ring avatar-ring--1" />
+              <div className="avatar-ring avatar-ring--2" />
+
+              {/* ── Photo frame ── */}
+              <div className="avatar-frame">
+                {/* shimmer sweep on hover */}
+                <div className="avatar-shimmer" />
+                <img
+                  src={`${import.meta.env.BASE_URL}/photo.png`}
+                  alt="Sun Raksmean"
+                  className="avatar-photo"
+                />
               </div>
 
-              {/* Stat card — top right */}
-              <div style={{
-                position: 'absolute', top: -16, right: -16,
-                background: 'var(--bg-card)', border: '1px solid var(--border)',
-                borderRadius: '0.75rem', padding: '0.6rem 1rem',
-                boxShadow: 'var(--shadow-card)', textAlign: 'center', zIndex: 2,
-              }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-blue)' }}>7+</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Years Exp.</div>
-              </div>
 
-              {/* Stat card — bottom left */}
-              <div style={{
-                position: 'absolute', bottom: -16, left: -16,
-                background: 'var(--bg-card)', border: '1px solid var(--border)',
-                borderRadius: '0.75rem', padding: '0.6rem 1rem',
-                boxShadow: 'var(--shadow-card)', textAlign: 'center', zIndex: 2,
-              }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>5+</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Projects</div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -308,24 +282,132 @@ export default function Hero({ editMode }: HeroProps) {
           display: inline-block;
         }
 
+        /* ── Premium photo frame ── */
+        .avatar-frame {
+          position: relative;
+          width: 260px;
+          height: 310px;
+          border-radius: 2rem;
+          /* gradient border via padding + background */
+          background: var(--accent-gradient);
+          padding: 3px;
+          box-shadow:
+            0 0 0 1px rgba(59,130,246,0.15),
+            0 24px 60px var(--accent-glow),
+            0 8px 24px rgba(0,0,0,0.15);
+          transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1),
+                      box-shadow 0.4s ease;
+          overflow: hidden;
+          cursor: default;
+        }
+        .hero-avatar:hover .avatar-frame {
+          transform: translateY(-8px) rotate(1deg);
+          box-shadow:
+            0 0 0 1px rgba(59,130,246,0.3),
+            0 40px 80px var(--accent-glow),
+            0 16px 40px rgba(0,0,0,0.2);
+        }
+
+        /* The actual photo */
+        .avatar-photo {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;   /* keeps face in frame */
+          border-radius: calc(2rem - 3px);
+          display: block;
+          transition: transform 0.5s ease, filter 0.4s ease;
+          filter: contrast(1.03) brightness(1.02);
+        }
+        .hero-avatar:hover .avatar-photo {
+          transform: scale(1.04);
+          filter: contrast(1.06) brightness(1.04);
+        }
+
+        /* Shimmer sweep on hover */
+        .avatar-shimmer {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          border-radius: calc(2rem - 3px);
+          background: linear-gradient(
+            120deg,
+            transparent 30%,
+            rgba(255,255,255,0.18) 50%,
+            transparent 70%
+          );
+          background-size: 200% 100%;
+          background-position: 200% 0;
+          transition: background-position 0s;
+          pointer-events: none;
+        }
+        .hero-avatar:hover .avatar-shimmer {
+          animation: shimmerSweep 0.65s ease forwards;
+        }
+        @keyframes shimmerSweep {
+          from { background-position: 200% 0; }
+          to   { background-position: -200% 0; }
+        }
+
+        /* ── Decorative rings ── */
+        .avatar-ring {
+          position: absolute;
+          border-radius: 50%;
+          border: 2px solid;
+          pointer-events: none;
+          opacity: 0.18;
+          animation: spinRing 12s linear infinite;
+        }
+        .avatar-ring--1 {
+          width: 320px; height: 320px;
+          top: 50%; left: 50%;
+          translate: -50% -50%;
+          border-color: var(--accent-blue);
+          border-style: dashed;
+          animation-direction: normal;
+        }
+        .avatar-ring--2 {
+          width: 380px; height: 380px;
+          top: 50%; left: 50%;
+          translate: -50% -50%;
+          border-color: var(--accent-cyan);
+          border-style: dotted;
+          animation-direction: reverse;
+          animation-duration: 18s;
+          opacity: 0.10;
+        }
+        @keyframes spinRing {
+          to { transform: rotate(360deg); }
+        }
+
         /* ── Mobile layout ── */
         @media (max-width: 768px) {
           .hero-grid {
-            grid-template-columns: 1fr;   /* single column */
+            grid-template-columns: 1fr;
             gap: 0;
             text-align: center;
           }
 
-          /* Text stays on top, avatar below */
-          .hero-text          { order: 1; width: 100%; }
-          .hero-avatar-wrap   { order: 2; width: 100%; margin-top: 2rem; margin-bottom: 1rem; }
+          /* Text on top, avatar below */
+          .hero-text        { order: 1; width: 100%; }
+          .hero-avatar-wrap { order: 2; width: 100%; margin-top: 2.5rem; margin-bottom: 1.5rem; }
 
           /* Center inline elements */
           .hero-pills { justify-content: center; }
           .hero-ctas  { justify-content: center; }
 
-          /* Scale avatar down slightly so stat cards don't clip viewport edges */
-          .hero-avatar-wrap { transform: scale(0.88); transform-origin: top center; }
+          /* Scale the whole avatar block so rings + stat badges stay on screen */
+          .hero-avatar-wrap { transform: scale(0.72); transform-origin: top center; }
+
+          /* Disable hover tilt on touch — feels glitchy */
+          .hero-avatar:hover .avatar-frame { transform: none; }
+          .hero-avatar:hover .avatar-photo { transform: none; }
+        }
+
+        /* On very small phones, hide the decorative rings to avoid overflow */
+        @media (max-width: 480px) {
+          .avatar-ring { display: none; }
+          .hero-avatar-wrap { transform: scale(0.66); }
         }
       `}</style>
     </section>

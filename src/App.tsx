@@ -6,6 +6,8 @@ import {
 } from './data/seed';
 import type { Skill, Experience, Project, Certification } from './types';
 
+import { AuthProvider, useAuth } from './context/AuthContext';
+
 import Header from './components/page/Header';
 import Hero from './components/page/Hero';
 import About from './components/page/About';
@@ -17,10 +19,13 @@ import Testimonials from './components/page/Testimonials';
 import Contact from './components/page/Contact';
 import Footer from './components/page/Footer';
 
-export default function App() {
+function AppInner() {
+  const { isAdmin, logout } = useAuth();
   const [dark, setDark] = useDarkMode();
-  const [editMode, setEditMode] = useLocalStorage('portfolio-edit-mode', false);
   const [logo, setLogo] = useLocalStorage('portfolio-logo', 'Sun Raksmean');
+
+  // isAdmin IS editMode — no separate editMode state needed
+  const editMode = isAdmin;
 
   // Persistent data
   const [skills, setSkills] = useLocalStorage<Skill[]>('portfolio-skills', defaultSkills);
@@ -29,24 +34,24 @@ export default function App() {
   const [certs, setCerts] = useLocalStorage<Certification[]>('portfolio-certs', defaultCertifications);
 
   // Skill ops
-  const addSkill = (s: Skill) => setSkills(prev => [...prev, s]);
-  const editSkill = (s: Skill) => setSkills(prev => prev.map(x => x.id === s.id ? s : x));
+  const addSkill    = (s: Skill)  => setSkills(prev => [...prev, s]);
+  const editSkill   = (s: Skill)  => setSkills(prev => prev.map(x => x.id === s.id ? s : x));
   const deleteSkill = (id: string) => setSkills(prev => prev.filter(x => x.id !== id));
 
   // Experience ops
-  const addExp = (e: Experience) => setExperiences(prev => [e, ...prev]);
-  const editExp = (e: Experience) => setExperiences(prev => prev.map(x => x.id === e.id ? e : x));
-  const deleteExp = (id: string) => setExperiences(prev => prev.filter(x => x.id !== id));
+  const addExp    = (e: Experience)  => setExperiences(prev => [e, ...prev]);
+  const editExp   = (e: Experience)  => setExperiences(prev => prev.map(x => x.id === e.id ? e : x));
+  const deleteExp = (id: string)     => setExperiences(prev => prev.filter(x => x.id !== id));
 
   // Project ops
-  const addProject = (p: Project) => setProjects(prev => [...prev, p]);
-  const editProject = (p: Project) => setProjects(prev => prev.map(x => x.id === p.id ? p : x));
-  const deleteProject = (id: string) => setProjects(prev => prev.filter(x => x.id !== id));
+  const addProject    = (p: Project)  => setProjects(prev => [...prev, p]);
+  const editProject   = (p: Project)  => setProjects(prev => prev.map(x => x.id === p.id ? p : x));
+  const deleteProject = (id: string)  => setProjects(prev => prev.filter(x => x.id !== id));
 
   // Cert ops
-  const addCert = (c: Certification) => setCerts(prev => [...prev, c]);
-  const editCert = (c: Certification) => setCerts(prev => prev.map(x => x.id === c.id ? c : x));
-  const deleteCert = (id: string) => setCerts(prev => prev.filter(x => x.id !== id));
+  const addCert    = (c: Certification) => setCerts(prev => [...prev, c]);
+  const editCert   = (c: Certification) => setCerts(prev => prev.map(x => x.id === c.id ? c : x));
+  const deleteCert = (id: string)       => setCerts(prev => prev.filter(x => x.id !== id));
 
   return (
     <>
@@ -54,7 +59,7 @@ export default function App() {
         dark={dark}
         toggleDark={() => setDark(d => !d)}
         editMode={editMode}
-        toggleEdit={() => setEditMode(e => !e)}
+        toggleEdit={logout}          // "Exit Edit" = logout
         logo={logo}
         onLogoChange={setLogo}
       />
@@ -97,8 +102,16 @@ export default function App() {
       <Footer />
 
       {editMode && (
-        <div className="edit-banner">✏️ Edit Mode Active</div>
+        <div className="edit-banner">✏️ Admin Edit Mode</div>
       )}
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppInner />
+    </AuthProvider>
   );
 }

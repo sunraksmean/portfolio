@@ -165,8 +165,7 @@ export default function ExperienceSection({ experiences, onAdd, onEdit, onDelete
 
       <style>{`
         .exp-list {
-          max-width: 800px;
-          margin: 0 auto;
+          width: 100%;
         }
         @media (max-width: 768px) {
           .exp-list .exp-form-row {
