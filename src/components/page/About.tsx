@@ -1,7 +1,14 @@
 import { useEffect } from 'react';
-import { BookOpen, Globe, Heart, Award, Briefcase, GitBranch, Users } from 'lucide-react';
+import { BookOpen, Globe, Heart, Award, Briefcase, GitBranch, Users, ChevronUp, ChevronDown } from 'lucide-react';
 
-export default function About() {
+interface Props {
+  editMode?: boolean;
+  onMoveSection?: (dir: 'up' | 'down') => void;
+  isFirst?: boolean;
+  isLast?: boolean;
+}
+
+export default function About({ editMode, onMoveSection, isFirst, isLast }: Props) {
   // Ensure unused isMobile state is removed; layout handled purely via CSS
   useEffect(() => {}, []);
 
@@ -238,7 +245,13 @@ export default function About() {
         }
       `}</style>
 
-      <section id="about" className="about-section">
+      <section id="about" className="about-section" style={{ position: 'relative' }}>
+        {editMode && onMoveSection && (
+          <div style={{ position: 'absolute', right: '1.5rem', top: '1.5rem', display: 'flex', gap: '0.5rem', zIndex: 10 }}>
+            <button className="btn btn-edit" disabled={isFirst} onClick={() => onMoveSection('up')} title="Move Section Up"><ChevronUp size={14} /></button>
+            <button className="btn btn-edit" disabled={isLast} onClick={() => onMoveSection('down')} title="Move Section Down"><ChevronDown size={14} /></button>
+          </div>
+        )}
         <div className="about-container">
           <div className="about-grid">
 

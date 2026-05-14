@@ -1,6 +1,6 @@
 // src/components/Certifications.tsx
 import { useState } from 'react';
-import { Plus, Trash2, Edit3, Check, X } from 'lucide-react';
+import { Plus, Trash2, Edit3, Check, X, ChevronUp, ChevronDown } from 'lucide-react';
 import type { Certification } from '../../types';
 
 interface Props {
@@ -8,10 +8,17 @@ interface Props {
   onAdd: (c: Certification) => void;
   onEdit: (c: Certification) => void;
   onDelete: (id: string) => void;
+  onMove: (id: string, dir: 'up' | 'down') => void;
   editMode: boolean;
+  onMoveSection: (dir: 'up' | 'down') => void;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
-function CertCard({ cert, editMode, onEdit, onDelete }: { cert: Certification; editMode: boolean; onEdit: (c: Certification) => void; onDelete: (id: string) => void }) {
+function CertCard({ cert, editMode, onEdit, onDelete, onMove, isFirstItem, isLastItem }: { 
+  cert: Certification; editMode: boolean; onEdit: (c: Certification) => void; onDelete: (id: string) => void;
+  onMove: (id: string, dir: 'up' | 'down') => void; isFirstItem: boolean; isLastItem: boolean;
+}) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(cert);
 
@@ -45,6 +52,10 @@ function CertCard({ cert, editMode, onEdit, onDelete }: { cert: Certification; e
         <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{cert.year}</span>
         {editMode && (
           <div style={{ display: 'flex', gap: '0.35rem' }}>
+            <div style={{ display: 'flex', gap: '0.15rem', marginRight: '0.2rem' }}>
+              <button className="btn btn-edit" disabled={isFirstItem} onClick={() => onMove(cert.id, 'up')} style={{ padding: '0.2rem' }}><ChevronUp size={11} /></button>
+              <button className="btn btn-edit" disabled={isLastItem} onClick={() => onMove(cert.id, 'down')} style={{ padding: '0.2rem' }}><ChevronDown size={11} /></button>
+            </div>
             <button className="btn btn-edit" onClick={() => setEditing(true)}><Edit3 size={11} /></button>
             <button className="btn btn-danger" onClick={() => onDelete(cert.id)}><Trash2 size={11} /></button>
           </div>
@@ -54,7 +65,7 @@ function CertCard({ cert, editMode, onEdit, onDelete }: { cert: Certification; e
   );
 }
 
-export default function Certifications({ certs, onAdd, onEdit, onDelete, editMode }: Props) {
+export default function Certifications({ certs, onAdd, onEdit, onDelete, onMove, editMode, onMoveSection, isFirst, isLast }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ title: '', issuer: '', year: new Date().getFullYear().toString(), icon: '📜' });
 
@@ -66,7 +77,13 @@ export default function Certifications({ certs, onAdd, onEdit, onDelete, editMod
   };
 
   return (
-    <section id="certifications" className="section">
+    <section id="certifications" className="section" style={{ position: 'relative' }}>
+      {editMode && (
+        <div style={{ position: 'absolute', right: '1.5rem', top: '1.5rem', display: 'flex', gap: '0.5rem', zIndex: 10 }}>
+          <button className="btn btn-edit" disabled={isFirst} onClick={() => onMoveSection('up')} title="Move Section Up"><ChevronUp size={14} /></button>
+          <button className="btn btn-edit" disabled={isLast} onClick={() => onMoveSection('down')} title="Move Section Down"><ChevronDown size={14} /></button>
+        </div>
+      )}
       <div className="container">
         <div className="certs-header">
           <div className="certs-heading">
@@ -82,8 +99,17 @@ export default function Certifications({ certs, onAdd, onEdit, onDelete, editMod
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
-          {certs.map(c => (
-            <CertCard key={c.id} cert={c} editMode={editMode} onEdit={onEdit} onDelete={onDelete} />
+          {certs.map((c, idx) => (
+            <CertCard 
+              key={c.id} 
+              cert={c} 
+              editMode={editMode} 
+              onEdit={onEdit} 
+              onDelete={onDelete} 
+              onMove={onMove}
+              isFirstItem={idx === 0}
+              isLastItem={idx === certs.length - 1}
+            />
           ))}
         </div>
 

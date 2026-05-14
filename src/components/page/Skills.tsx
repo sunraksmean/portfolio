@@ -1,6 +1,6 @@
 // src/components/Skills.tsx
 import { useState } from 'react';
-import { Plus, Trash2, Edit3, Check, X } from 'lucide-react';
+import { Plus, Trash2, Edit3, Check, X, ChevronUp, ChevronDown } from 'lucide-react';
 import type { Skill } from '../../types';
 
 interface SkillsProps {
@@ -8,12 +8,19 @@ interface SkillsProps {
   onAdd: (s: Skill) => void;
   onEdit: (s: Skill) => void;
   onDelete: (id: string) => void;
+  onMove: (id: string, dir: 'up' | 'down') => void;
   editMode: boolean;
+  onMoveSection: (dir: 'up' | 'down') => void;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 const CATEGORIES = ['Systems & Support', 'Networking', 'Database & Reporting', 'Tools & Security'];
 
-function SkillBar({ skill, editMode, onEdit, onDelete }: { skill: Skill; editMode: boolean; onEdit: (s: Skill) => void; onDelete: (id: string) => void }) {
+function SkillBar({ skill, editMode, onEdit, onDelete, onMove, isFirst, isLast }: { 
+  skill: Skill; editMode: boolean; onEdit: (s: Skill) => void; onDelete: (id: string) => void;
+  onMove: (id: string, dir: 'up' | 'down') => void; isFirst: boolean; isLast: boolean;
+}) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<Skill>(skill);
 
@@ -41,6 +48,10 @@ function SkillBar({ skill, editMode, onEdit, onDelete }: { skill: Skill; editMod
           <span style={{ fontSize: '0.78rem', color: 'var(--accent-cyan)', fontWeight: 600 }}>{skill.level}%</span>
           {editMode && (
             <>
+              <div style={{ display: 'flex', gap: '0.15rem', marginRight: '0.2rem' }}>
+                <button className="btn btn-edit" disabled={isFirst} onClick={() => onMove(skill.id, 'up')} style={{ padding: '0.2rem' }}><ChevronUp size={11} /></button>
+                <button className="btn btn-edit" disabled={isLast} onClick={() => onMove(skill.id, 'down')} style={{ padding: '0.2rem' }}><ChevronDown size={11} /></button>
+              </div>
               <button className="btn btn-edit" onClick={() => setEditing(true)}><Edit3 size={11} /></button>
               <button className="btn btn-danger" onClick={() => onDelete(skill.id)}><Trash2 size={11} /></button>
             </>
@@ -60,7 +71,7 @@ function SkillBar({ skill, editMode, onEdit, onDelete }: { skill: Skill; editMod
   );
 }
 
-export default function Skills({ skills, onAdd, onEdit, onDelete, editMode }: SkillsProps) {
+export default function Skills({ skills, onAdd, onEdit, onDelete, onMove, editMode, onMoveSection, isFirst, isLast }: SkillsProps) {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<Omit<Skill, 'id'>>({ name: '', level: 80, category: CATEGORIES[0] });
   const [activeTab, setActiveTab] = useState(CATEGORIES[0]);
@@ -75,14 +86,20 @@ export default function Skills({ skills, onAdd, onEdit, onDelete, editMode }: Sk
   };
 
   return (
-    <section id="skills" className="section" style={{ background: 'var(--bg-secondary)' }}>
-      <div className="container">
-        <div className="divider" />
+    <section id="skills" className="section" style={{ background: 'var(--bg-secondary)', position: 'relative' }}>
+      {editMode && (
+        <div style={{ position: 'absolute', right: '1.5rem', top: '1.5rem', display: 'flex', gap: '0.5rem', zIndex: 10 }}>
+          <button className="btn btn-edit" disabled={isFirst} onClick={() => onMoveSection('up')} title="Move Section Up"><ChevronUp size={14} /></button>
+          <button className="btn btn-edit" disabled={isLast} onClick={() => onMoveSection('down')} title="Move Section Down"><ChevronDown size={14} /></button>
+        </div>
+      )}
+      <div className="container" style={{ textAlign: 'center' }}>
+        <div className="divider" style={{ margin: '0 auto 0.75rem' }} />
         <h2 className="section-title">Technical Skills</h2>
         <p className="section-subtitle">Core competencies across IT domains</p>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '2rem', justifyContent: 'center' }}>
           {CATEGORIES.map(cat => (
             <button key={cat} onClick={() => setActiveTab(cat)}
               style={{
@@ -106,8 +123,17 @@ export default function Skills({ skills, onAdd, onEdit, onDelete, editMode }: Sk
           {filtered.length === 0 && (
             <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>No skills in this category yet.</p>
           )}
-          {filtered.map(s => (
-            <SkillBar key={s.id} skill={s} editMode={editMode} onEdit={onEdit} onDelete={onDelete} />
+          {filtered.map((s, idx) => (
+            <SkillBar 
+              key={s.id} 
+              skill={s} 
+              editMode={editMode} 
+              onEdit={onEdit} 
+              onDelete={onDelete} 
+              onMove={onMove}
+              isFirst={idx === 0}
+              isLast={idx === filtered.length - 1}
+            />
           ))}
 
           {editMode && !showForm && (

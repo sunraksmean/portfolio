@@ -1,6 +1,6 @@
 // src/components/Projects.tsx
 import { useState } from 'react';
-import { Plus, Trash2, Edit3, X, Check, ExternalLink, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Edit3, X, Check, ExternalLink, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react';
 import type { Project } from '../../types';
 
 interface Props {
@@ -8,7 +8,11 @@ interface Props {
   onAdd: (p: Project) => void;
   onEdit: (p: Project) => void;
   onDelete: (id: string) => void;
+  onMove: (id: string, dir: 'up' | 'down') => void;
   editMode: boolean;
+  onMoveSection: (dir: 'up' | 'down') => void;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -17,10 +21,12 @@ const STATUS_COLORS: Record<string, string> = {
   concept: '#8b5cf6',
 };
 
-function ProjectCard({ project, editMode, onEdit, onDelete, onClick }: {
+function ProjectCard({ project, editMode, onEdit, onDelete, onClick, onMove, isFirstItem, isLastItem }: {
   project: Project; editMode: boolean;
   onEdit: (p: Project) => void; onDelete: (id: string) => void;
   onClick: () => void;
+  onMove: (id: string, dir: 'up' | 'down') => void;
+  isFirstItem: boolean; isLastItem: boolean;
 }) {
   return (
     <div className="card" style={{ padding: '1.5rem', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '1rem' }} onClick={onClick}>
@@ -53,6 +59,10 @@ function ProjectCard({ project, editMode, onEdit, onDelete, onClick }: {
         </span>
         {editMode && (
           <div style={{ display: 'flex', gap: '0.35rem' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', gap: '0.15rem', marginRight: '0.2rem' }}>
+              <button className="btn btn-edit" disabled={isFirstItem} onClick={() => onMove(project.id, 'up')} style={{ padding: '0.2rem' }}><ChevronUp size={11} /></button>
+              <button className="btn btn-edit" disabled={isLastItem} onClick={() => onMove(project.id, 'down')} style={{ padding: '0.2rem' }}><ChevronDown size={11} /></button>
+            </div>
             <button className="btn btn-edit" onClick={() => onEdit(project)}><Edit3 size={11} /></button>
             <button className="btn btn-danger" onClick={() => onDelete(project.id)}><Trash2 size={11} /></button>
           </div>
@@ -168,12 +178,18 @@ function EditProjectModal({ project, onSave, onClose }: { project: Partial<Proje
   );
 }
 
-export default function Projects({ projects, onAdd, onEdit, onDelete, editMode }: Props) {
+export default function Projects({ projects, onAdd, onEdit, onDelete, onMove, editMode, onMoveSection, isFirst, isLast }: Props) {
   const [selected, setSelected] = useState<Project | null>(null);
   const [editing, setEditing] = useState<Partial<Project> | null>(null);
 
   return (
-    <section id="projects" className="section" style={{ background: 'var(--bg-secondary)' }}>
+    <section id="projects" className="section" style={{ background: 'var(--bg-secondary)', position: 'relative' }}>
+      {editMode && (
+        <div style={{ position: 'absolute', right: '1.5rem', top: '1.5rem', display: 'flex', gap: '0.5rem', zIndex: 10 }}>
+          <button className="btn btn-edit" disabled={isFirst} onClick={() => onMoveSection('up')} title="Move Section Up"><ChevronUp size={14} /></button>
+          <button className="btn btn-edit" disabled={isLast} onClick={() => onMoveSection('down')} title="Move Section Down"><ChevronDown size={14} /></button>
+        </div>
+      )}
       <div className="container">
         <div className="projects-header">
           <div className="projects-heading">
@@ -189,11 +205,14 @@ export default function Projects({ projects, onAdd, onEdit, onDelete, editMode }
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.25rem' }}>
-          {projects.map(p => (
+          {projects.map((p, idx) => (
             <ProjectCard key={p.id} project={p} editMode={editMode}
               onClick={() => setSelected(p)}
               onEdit={p => setEditing(p)}
               onDelete={onDelete}
+              onMove={onMove}
+              isFirstItem={idx === 0}
+              isLastItem={idx === projects.length - 1}
             />
           ))}
         </div>
