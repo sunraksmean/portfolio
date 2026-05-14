@@ -4,7 +4,7 @@ import {
   defaultSkills, defaultExperience, defaultProjects,
   defaultCertifications, defaultTestimonials,
 } from './data/seed';
-import type { Skill, Experience, Project, Certification } from './types';
+import type { Skill, Experience, Project, Certification, Testimonial } from './types';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 
