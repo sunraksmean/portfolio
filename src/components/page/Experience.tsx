@@ -186,7 +186,14 @@ export default function ExperienceSection({ experiences, onAdd, onEdit, onDelete
                 <label htmlFor="current" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', cursor: 'pointer' }}>Current Position</label>
               </div>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button className="btn btn-primary" onClick={handleAdd}><Check size={14} /> Add</button>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={handleAdd} 
+                  disabled={!form.company.trim() || !form.role.trim()}
+                  style={{ opacity: (!form.company.trim() || !form.role.trim()) ? 0.5 : 1 }}
+                >
+                  <Check size={14} /> Add
+                </button>
                 <button className="btn btn-ghost" onClick={() => setShowForm(false)}><X size={14} /> Cancel</button>
               </div>
             </div>
