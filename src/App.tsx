@@ -113,6 +113,52 @@ function AppInner() {
     setTestimonials(moveItem(testimonials, idx, dir));
   };
 
+  // Push updated seed.ts to GitHub using the REST API
+  const pushToGitHub = async (content: string) => {
+    try {
+      const token = import.meta.env.VITE_GITHUB_TOKEN;
+      if (!token) {
+        console.warn('⚠️ GitHub token not set; skipping remote push.');
+        return;
+      }
+      const repoOwner = 'sunraksmean'; // adjust if different
+      const repoName = 'portfolio';
+      const filePath = 'src/data/seed.ts';
+
+      // Get the current file SHA
+      const getRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        headers: { Authorization: `token ${token}` },
+      });
+      const getData: any = await getRes.json();
+      const sha = getData.sha;
+
+      // Prepare the commit payload
+      const payload = {
+        message: 'Update seed data via UI',
+        content: btoa(unescape(encodeURIComponent(content))), // base64 encode
+        sha,
+        branch: 'main',
+      };
+
+      const putRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `token ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!putRes.ok) {
+        const err = await putRes.text();
+        console.error('❌ GitHub push failed:', err);
+      } else {
+        console.log('✅ Seed data pushed to GitHub');
+      }
+    } catch (e) {
+      console.error('❌ Unexpected error during GitHub push:', e);
+    }
+  };
+
   const handleSaveToProject = async () => {
     try {
       const response = await fetch('/api/save', {
@@ -121,9 +167,17 @@ function AppInner() {
         body: JSON.stringify({ skills, experiences, projects, certs, testimonials })
       });
       if (response.ok) {
-        alert('✅ Changes saved! seed.ts has been updated with your latest data.');
-        // Exit edit mode after saving so the UI returns to view mode
-        logout();
+        const content = `// src/data/seed.ts
+import type { Skill, Experience, Project, Certification, Testimonial } from '../types';
+\nexport const defaultSkills: Skill[] = ${JSON.stringify(skills, null, 2)};
+\nexport const defaultExperience: Experience[] = ${JSON.stringify(experiences, null, 2)};
+\nexport const defaultProjects: Project[] = ${JSON.stringify(projects, null, 2)};
+\nexport const defaultCertifications: Certification[] = ${JSON.stringify(certs, null, 2)};
+\nexport const defaultTestimonials: Testimonial[] = ${JSON.stringify(testimonials, null, 2)};`;
+        // Push to GitHub (optional)
+        await pushToGitHub(content);
+        alert('✅ Changes saved! seed.ts updated and pushed to GitHub.');
+        logout(); // exit edit mode after saving
       } else {
         alert('❌ Failed to save to project files.');
       }
