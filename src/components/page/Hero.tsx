@@ -65,10 +65,9 @@ export default function Hero({ editMode }: HeroProps) {
 
           {/* ── Text column ── */}
           <div className="hero-text">
-            {/* Availability Badge — owner-only toggle */}
-            <div className="availability-badge" style={{ marginBottom: '1.25rem' }}>
-              {editMode ? (
-                /* ── Owner: clickable toggle ── */
+            {/* ── Availability Badge ── */}
+            {editMode ? (
+              <div className="availability-badge" style={{ marginBottom: '1.25rem' }}>
                 <button
                   onClick={toggleAvailable}
                   onMouseEnter={() => setBadgeHovered(true)}
@@ -79,61 +78,48 @@ export default function Hero({ editMode }: HeroProps) {
                     alignItems: 'center',
                     gap: '0.35rem',
                     padding: '0.25rem 0.75rem',
-                    background: available ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                    border: available ? '1px solid rgba(16,185,129,0.35)' : '1px solid rgba(239,68,68,0.35)',
+                    background: 'rgba(16,185,129,0.1)',
+                    border: '1px solid rgba(16,185,129,0.35)',
                     borderRadius: '999px',
                     fontSize: '0.75rem',
                     fontWeight: 500,
-                    color: available ? '#10b981' : '#ef4444',
+                    color: '#10b981',
                     letterSpacing: '0.02em',
                     cursor: 'pointer',
                     fontFamily: "'Kantumruy Pro', sans-serif",
                     transition: 'all 0.25s ease',
                     transform: badgeHovered ? 'scale(1.05)' : 'scale(1)',
-                    boxShadow: badgeHovered
-                      ? available ? '0 0 12px rgba(16,185,129,0.3)' : '0 0 12px rgba(239,68,68,0.3)'
-                      : 'none',
+                    boxShadow: badgeHovered ? '0 0 12px rgba(16,185,129,0.3)' : 'none',
                   }}
                 >
-                  <span style={{
-                    width: 8, height: 8, borderRadius: '50%',
-                    background: available ? '#10b981' : '#ef4444',
-                    display: 'inline-block',
-                    animation: available ? 'pulse-dot 2s infinite' : 'none',
-                    flexShrink: 0,
-                  }} />
-                  {badgeHovered
-                    ? (available ? 'Click → Set Unavailable' : 'Click → Set Available')
-                    : (available ? 'Available for opportunities' : 'Not Available')}
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', display: 'inline-block', animation: 'pulse-dot 2s infinite', flexShrink: 0 }} />
+                  {badgeHovered ? (available ? 'Click → Set Unavailable' : 'Click → Set Available') : (available ? 'Available for opportunities' : '')}
                 </button>
-              ) : (
-                /* ── Visitor: read-only display ── */
-                <span style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  padding: '0.25rem 0.75rem',
-                  background: available ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
-                  border: available ? '1px solid rgba(16,185,129,0.35)' : '1px solid rgba(239,68,68,0.35)',
-                  borderRadius: '999px',
-                  fontSize: '0.75rem',
-                  fontWeight: 500,
-                  color: available ? '#10b981' : '#ef4444',
-                  letterSpacing: '0.02em',
-                  cursor: 'default',
-                  fontFamily: "'Kantumruy Pro', sans-serif",
-                }}>
+              </div>
+            ) : (
+              available && (
+                <div className="availability-badge" style={{ marginBottom: '1.25rem' }}>
                   <span style={{
-                    width: 8, height: 8, borderRadius: '50%',
-                    background: available ? '#10b981' : '#ef4444',
-                    display: 'inline-block',
-                    animation: available ? 'pulse-dot 2s infinite' : 'none',
-                    flexShrink: 0,
-                  }} />
-                  {available ? 'Available for opportunities' : 'Not Available'}
-                </span>
-              )}
-            </div>
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    padding: '0.25rem 0.75rem',
+                    background: 'rgba(16,185,129,0.1)',
+                    border: '1px solid rgba(16,185,129,0.35)',
+                    borderRadius: '999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 500,
+                    color: '#10b981',
+                    letterSpacing: '0.02em',
+                    cursor: 'default',
+                    fontFamily: "'Kantumruy Pro', sans-serif",
+                  }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', display: 'inline-block', animation: 'pulse-dot 2s infinite', flexShrink: 0 }} />
+                    Available for opportunities
+                  </span>
+                </div>
+              )
+            )}
 
             {/* Name */}
             <h1 className="hero-name">
@@ -444,7 +430,7 @@ export default function Hero({ editMode }: HeroProps) {
         }
 
         /* ── Mobile layout ── */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
           .hero-grid {
             grid-template-columns: 1fr;
             gap: 0;
@@ -461,7 +447,7 @@ export default function Hero({ editMode }: HeroProps) {
 
           /* Scale the whole avatar block so rings + stat badges stay on screen */
           .hero-avatar-wrap { transform: scale(0.72); transform-origin: top center; }
-          .availability-badge { display: none; }
+          .availability-badge { display: none !important; }
 
           /* Disable hover tilt on touch — feels glitchy */
           .hero-avatar:hover .avatar-frame { transform: none; }

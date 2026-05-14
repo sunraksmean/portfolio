@@ -304,6 +304,7 @@ export default function Contact({ editMode, onMoveSection, isFirst, isLast }: Pr
 
         @media (max-width: 992px) {
           .contact-grid-enhanced { grid-template-columns: 1fr; gap: 2rem; }
+          .availability-badge { display: none !important; }
         }
       `}</style>
     </section>

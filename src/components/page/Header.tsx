@@ -279,7 +279,7 @@ export default function Header({ dark, toggleDark, editMode, toggleEdit, logo, o
         }
 
         /* ── Responsive ── */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
           .nav-desktop  { display: none !important; }
           .nav-edit-btn { display: none !important; }
           .hamburger-btn { display: flex !important; }

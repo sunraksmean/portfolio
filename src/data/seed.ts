@@ -120,29 +120,6 @@ export const defaultSkills: Skill[] = [
 
 export const defaultExperience: Experience[] = [
   {
-    "id": "exp-1778740566970",
-    "company": "ALADANG EXPRESS",
-    "role": "DRIVER",
-    "period": "",
-    "duration": "",
-    "description": [
-      "DRIVER JERNEY"
-    ],
-    "current": false
-  },
-  {
-    "id": "exp-1778739980503",
-    "company": "Kantou Meas Company",
-    "role": "Kantou Meas Company",
-    "period": "",
-    "duration": "",
-    "description": [
-      "Test"
-    ],
-    "current": false,
-    "descText": "Test"
-  },
-  {
     "id": "e1",
     "company": "Prasithpheap Credit PLC",
     "role": "Acting Deputy IT Manager",
@@ -156,6 +133,32 @@ export const defaultExperience: Experience[] = [
       "Generated and analyzed business reports for CEO, DCEO, CFO, and Branch Managers using SQL queries",
       "Prepared key reports: loan performance, profit & expense, collection, branch targets, staff attendance"
     ]
+  },
+  {
+    "id": "exp-1778746693357",
+    "company": "KongVong Finance",
+    "role": "Sharehoder  and Owner",
+    "period": "",
+    "duration": "",
+    "description": [
+      "Installed, configured and maintained computers, printers, network devices and office software",
+      "Provided helpdesk support to staff (hardware, software, network and user accounts)",
+      "Managed user access, passwords and permissions",
+      "Monitored and maintained office network, Wi-Fi and internet connectivity",
+      "Performed system backup and data recovery",
+      "Installed and supported business applications used by finance and operations",
+      "Maintained company website and basic hosting/deployment",
+      "Troubleshoot technical issues quickly to minimize downtime",
+      "Supported daily use of accounting and financial systems",
+      "Assisted finance team with:",
+      "System setup and troubleshooting",
+      "Data entry and system validation",
+      "Generating reports from systems",
+      "Helped ensure data accuracy and system reliability",
+      "Supported digital record keeping and document management"
+    ],
+    "current": false,
+    "descText": "Installed, configured and maintained computers, printers, network devices and office software\nProvided helpdesk support to staff (hardware, software, network and user accounts)\nManaged user access, passwords and permissions\nMonitored and maintained office network, Wi-Fi and internet connectivity\nPerformed system backup and data recovery\nInstalled and supported business applications used by finance and operations\nMaintained company website and basic hosting/deployment\nTroubleshoot technical issues quickly to minimize downtime\nSupported daily use of accounting and financial systems\nAssisted finance team with:\nSystem setup and troubleshooting\nData entry and system validation\nGenerating reports from systems\nHelped ensure data accuracy and system reliability\nSupported digital record keeping and document management"
   },
   {
     "id": "exp-1778736273718",

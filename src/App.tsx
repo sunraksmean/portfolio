@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDarkMode, useLocalStorage } from './hooks/useLocalStorage';
 import {
   defaultSkills, defaultExperience, defaultProjects,
@@ -122,6 +122,8 @@ function AppInner() {
       });
       if (response.ok) {
         alert('✅ Changes saved! seed.ts has been updated with your latest data.');
+        // Exit edit mode after saving so the UI returns to view mode
+        logout();
       } else {
         alert('❌ Failed to save to project files.');
       }
@@ -225,6 +227,11 @@ function AppInner() {
         logo={logo}
         onLogoChange={setLogo}
       />
+      {editMode && (
+        <button className="btn btn-primary" onClick={handleSaveToProject} style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1100 }}>
+          <Save size={14} /> Save
+        </button>
+      )}
 
       <main>
         <Hero editMode={editMode} />
@@ -243,7 +250,7 @@ function AppInner() {
               </div>
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 <button className="btn btn-primary" onClick={handleSaveToProject} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
-                  <Save size={14} /> Save to Project
+                  <Save size={14} /> Save
                 </button>
                 <button className="btn btn-outline" onClick={() => setShowExport(true)} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>
                   View Code
