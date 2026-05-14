@@ -1,4 +1,5 @@
 // src/App.tsx
+import { useState } from 'react';
 import { useDarkMode, useLocalStorage } from './hooks/useLocalStorage';
 import {
   defaultSkills, defaultExperience, defaultProjects,
@@ -6,6 +7,7 @@ import {
 } from './data/seed';
 import type { Skill, Experience, Project, Certification, Testimonial } from './types';
 
+import { Save, LogOut, X } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 import Header from './components/page/Header';
@@ -23,6 +25,7 @@ function AppInner() {
   const { isAdmin, logout } = useAuth();
   const [dark, setDark] = useDarkMode();
   const [logo, setLogo] = useLocalStorage('portfolio-logo', 'Sun Raksmean');
+  const [showExport, setShowExport] = useState(false);
 
   // isAdmin IS editMode — no separate editMode state needed
   const editMode = isAdmin;
@@ -108,6 +111,24 @@ function AppInner() {
   const moveTestimonial   = (id: string, dir: 'up' | 'down') => {
     const idx = testimonials.findIndex(t => t.id === id);
     setTestimonials(moveItem(testimonials, idx, dir));
+  };
+
+  const handleSaveToProject = async () => {
+    try {
+      const response = await fetch('/api/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ skills, experiences, projects, certs, testimonials })
+      });
+      if (response.ok) {
+        alert('✅ Changes saved! seed.ts has been updated with your latest data.');
+      } else {
+        alert('❌ Failed to save to project files.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('❌ Error: Make sure the development server is running.');
+    }
   };
 
   // Section reordering logic
@@ -213,8 +234,114 @@ function AppInner() {
       <Footer />
 
       {editMode && (
-        <div className="edit-banner">✏️ Admin Edit Mode</div>
+        <>
+          <div className="admin-toolbar">
+            <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="pulse-dot-green" />
+                <span style={{ fontWeight: 600, fontSize: '0.85rem', color: '#fff' }}>Admin Mode</span>
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <button className="btn btn-primary" onClick={handleSaveToProject} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+                  <Save size={14} /> Save to Project
+                </button>
+                <button className="btn btn-outline" onClick={() => setShowExport(true)} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>
+                  View Code
+                </button>
+                <button className="btn btn-ghost" onClick={logout} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', color: '#fff' }}>
+                  <LogOut size={14} /> Exit
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {showExport && (
+            <div className="modal-overlay" onClick={() => setShowExport(false)}>
+              <div className="modal" style={{ maxWidth: '800px', width: '90%' }} onClick={e => e.stopPropagation()}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Export Portfolio Data</h3>
+                  <button className="btn btn-ghost" onClick={() => setShowExport(false)}><X size={20} /></button>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                  Copy the code below and paste it into your <code>src/data/seed.ts</code> file to make your changes permanent in the codebase.
+                </p>
+                <div style={{ position: 'relative' }}>
+                  <pre style={{ 
+                    background: '#1e1e1e', 
+                    color: '#d4d4d4', 
+                    padding: '1.5rem', 
+                    borderRadius: '0.75rem', 
+                    fontSize: '0.8rem', 
+                    maxHeight: '400px', 
+                    overflow: 'auto',
+                    border: '1px solid #333'
+                  }}>
+                    {`export const defaultSkills = ${JSON.stringify(skills, null, 2)};\n\nexport const defaultExperience = ${JSON.stringify(experiences, null, 2)};\n\nexport const defaultProjects = ${JSON.stringify(projects, null, 2)};\n\nexport const defaultCertifications = ${JSON.stringify(certs, null, 2)};\n\nexport const defaultTestimonials = ${JSON.stringify(testimonials, null, 2)};`}
+                  </pre>
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ position: 'absolute', top: '1rem', right: '1rem' }}
+                    onClick={() => {
+                      const code = `export const defaultSkills = ${JSON.stringify(skills, null, 2)};\n\nexport const defaultExperience = ${JSON.stringify(experiences, null, 2)};\n\nexport const defaultProjects = ${JSON.stringify(projects, null, 2)};\n\nexport const defaultCertifications = ${JSON.stringify(certs, null, 2)};\n\nexport const defaultTestimonials = ${JSON.stringify(testimonials, null, 2)};`;
+                      navigator.clipboard.writeText(code);
+                      alert('Code copied to clipboard!');
+                    }}
+                  >
+                    Copy Code
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
+
+      <style>{`
+        .admin-toolbar {
+          position: fixed;
+          bottom: 1.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 2rem);
+          max-width: 600px;
+          background: rgba(15, 23, 42, 0.9);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 1rem;
+          padding: 0.75rem 1rem;
+          z-index: 1000;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideUp {
+          from { transform: translate(-50%, 100%); opacity: 0; }
+          to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        .pulse-dot-green {
+          width: 8px;
+          height: 8px;
+          background: #10b981;
+          border-radius: 50%;
+          position: relative;
+        }
+        .pulse-dot-green::after {
+          content: '';
+          position: absolute;
+          inset: -4px;
+          border: 2px solid #10b981;
+          border-radius: 50%;
+          animation: pulse-ring 1.5s infinite;
+        }
+
+        @media (max-width: 600px) {
+          .admin-toolbar {
+            bottom: 1rem;
+            border-radius: 0.5rem;
+          }
+        }
+      `}</style>
     </>
   );
 }
